@@ -13,27 +13,20 @@ export const metadata: Metadata = {
 };
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen bg-midnight text-white">
-        <div className="flex">
-            <DashboardSidebar/>
-            <div className="min-w-0 flex-1">
-                <DashboardTopbar/>
-                <MobileDashboardNav/>
-                <div className="space-y-6 p-5 sm:p-8">
-                    <StatsGrid/>
-                    <div className="grid gap-6 xl:grid-cols-[1fr_22rem]">
-                        <div className="space-y-6">
-                            <RecentApplicationsTable/>
-                            <ActivityTimeline/>
-                        </div>
-                        <aside className="space-y-6">
-                            <CalendarPanel/>
-                            <UpcomingInterviews/>
-                        </aside>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-  );
+  <>
+    <StatsGrid />
+
+    <div className="grid gap-6 xl:grid-cols-[1fr_22rem]">
+      <div className="space-y-6">
+        <RecentApplicationsTable />
+        <ActivityTimeline />
+      </div>
+
+      <aside className="space-y-6">
+        <CalendarPanel />
+        <UpcomingInterviews />
+      </aside>
+    </div>
+  </>
+);
 }
