@@ -14,27 +14,59 @@ enum ApplicationStatus {
   OFFER
   REJECTED
 }
+
 model Application {
-  id              Int      @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   company         String
   role            String
   jobUrl          String?
   location        String
   salary          String?
-  status ApplicationStatus
+  status          ApplicationStatus
   recruiterName   String?
   recruiterEmail  String?
   applicationDate DateTime
   interviewDate   DateTime?
   notes           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  followUpDate      DateTime?
+followUpCompleted Boolean   @default(false)
+  userId          Int
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  sessions     Session[]
+  applications Application[]
+  resumes Resume[]
 }
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Resume {
+  id        Int      @id @default(autoincrement())
+  fileName  String
+  filePath  String
+  createdAt DateTime @default(now())
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+

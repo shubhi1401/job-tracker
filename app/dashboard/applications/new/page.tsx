@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -14,22 +15,28 @@ export default function NewApplicationPage() {
   const [status, setStatus] = useState("APPLIED");
   const [recruiterName, setRecruiterName] = useState("");
   const [recruiterEmail, setRecruiterEmail] = useState("");
+
   const [applicationDate, setApplicationDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  const [followUpDate, setFollowUpDate] = useState("");
   const [notes, setNotes] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     setError("");
 
-    // Frontend validation
-    if (!company || !role || !location || !applicationDate) {
+    if (!company.trim() || !role.trim() || !location.trim() || !applicationDate) {
       setError("Please fill all required fields.");
+      return;
+    }
+
+    if (followUpDate && followUpDate < applicationDate) {
+      setError("Follow-up date cannot be before the application date.");
       return;
     }
 
@@ -42,27 +49,30 @@ export default function NewApplicationPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          company,
-          role,
-          location,
+          company: company.trim(),
+          role: role.trim(),
+          location: location.trim(),
           jobUrl: jobUrl || null,
           salary: salary || null,
           status,
           recruiterName: recruiterName || null,
           recruiterEmail: recruiterEmail || null,
-          applicationDate: new Date(applicationDate),
+          applicationDate: new Date(`${applicationDate}T12:00:00`).toISOString(),
+          followUpDate: followUpDate
+            ? new Date(`${followUpDate}T12:00:00`).toISOString()
+            : null,
           notes: notes || null,
         }),
       });
 
       if (response.ok) {
         router.push("/dashboard/applications");
+        router.refresh();
         return;
       }
 
       const data = await response.json();
-
-      setError(data.error || "Failed to create application");
+      setError(data.error || "Failed to create application.");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -70,13 +80,17 @@ export default function NewApplicationPage() {
     }
   }
 
+  const inputClass =
+    "w-full rounded-lg border border-white/10 bg-slate-900 p-3 text-white outline-none focus:border-blue-500";
+
+  const labelClass = "mb-2 block text-sm font-medium text-white";
+
   return (
     <div className="max-w-3xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white">
           Add New Application
         </h1>
-
         <p className="mt-2 text-slate-400">
           Fill in the details below to track a new job application.
         </p>
@@ -92,91 +106,70 @@ export default function NewApplicationPage() {
           </p>
         )}
 
-        {/* Company */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Company *
-          </label>
-
+          <label className={labelClass}>Company *</label>
           <input
+            required
             type="text"
             value={company}
             onChange={(e) => setCompany(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
             placeholder="Google"
           />
         </div>
 
-        {/* Role */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Role *
-          </label>
-
+          <label className={labelClass}>Role *</label>
           <input
+            required
             type="text"
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
             placeholder="SDE Intern"
           />
         </div>
 
-        {/* Location */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Location *
-          </label>
-
+          <label className={labelClass}>Location *</label>
           <input
+            required
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
             placeholder="Bangalore"
           />
         </div>
 
-        {/* Job URL */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Job URL
-          </label>
-
+          <label className={labelClass}>Job URL</label>
           <input
             type="url"
             value={jobUrl}
             onChange={(e) => setJobUrl(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
             placeholder="https://company.com/jobs/123"
           />
         </div>
 
-        {/* Salary */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Salary
-          </label>
-
+          <label className={labelClass}>Salary</label>
           <input
             type="text"
             value={salary}
             onChange={(e) => setSalary(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
             placeholder="₹8 LPA"
           />
         </div>
 
-        {/* Status */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Status
-          </label>
-
+          <label className={labelClass}>Status</label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-slate-900 p-3 text-white outline-none"
+            className={inputClass}
           >
             <option value="APPLIED">Applied</option>
             <option value="INTERVIEW">Interview</option>
@@ -185,61 +178,63 @@ export default function NewApplicationPage() {
           </select>
         </div>
 
-        {/* Recruiter Name */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Recruiter Name
-          </label>
-
+          <label className={labelClass}>Recruiter Name</label>
           <input
             type="text"
             value={recruiterName}
             onChange={(e) => setRecruiterName(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
             placeholder="John Smith"
           />
         </div>
 
-        {/* Recruiter Email */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Recruiter Email
-          </label>
+          <label className={labelClass}>Recruiter Email</label>
           <input
             type="email"
             value={recruiterEmail}
             onChange={(e) => setRecruiterEmail(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
             placeholder="john@company.com"
           />
         </div>
-        {/* Application Date */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Application Date *
-          </label>
 
+        <div>
+          <label className={labelClass}>Application Date *</label>
           <input
+            required
             type="date"
             value={applicationDate}
             onChange={(e) => setApplicationDate(e.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={inputClass}
           />
         </div>
-        {/* Notes */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Notes
-          </label>
 
+        <div>
+          <label className={labelClass}>Follow-up Date</label>
+          <input
+            type="date"
+            value={followUpDate}
+            min={applicationDate}
+            onChange={(e) => setFollowUpDate(e.target.value)}
+            className={inputClass}
+          />
+          <p className="mt-1 text-xs text-slate-400">
+            Optional — choose when to contact the recruiter.
+          </p>
+        </div>
+
+        <div>
+          <label className={labelClass}>Notes</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="min-h-28 w-full rounded-lg border border-white/10 bg-transparent p-3 text-white outline-none"
+            className={`${inputClass} min-h-28`}
             placeholder="Add any notes about this application..."
           />
         </div>
-        {/* Submit */}
+
         <button
           type="submit"
           disabled={loading}

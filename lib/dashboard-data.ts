@@ -3,6 +3,7 @@ import {
   Bell,
   BriefcaseBusiness,
   CalendarCheck,
+  CalendarClock,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -48,7 +49,18 @@ export const dashboardStats = [
     value: "31",
     change: "-12% vs last month",
     icon: XCircle
-  }
+  },
+  {
+  label: "Resume Match",
+  href: "/dashboard/resume-match",
+  icon: BriefcaseBusiness,
+  active: false,
+},
+{
+  label: "Reminders",
+  href: "/dashboard/reminders",
+  icon: CalendarClock,
+},
 ];
 
 export const recentApplications = [
