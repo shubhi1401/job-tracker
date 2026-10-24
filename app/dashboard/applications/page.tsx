@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
@@ -25,6 +24,7 @@ export default async function ApplicationsPage() {
       status: true,
       applicationDate: true,
       followUpDate: true,
+      followUpCompleted: true,
       location: true,
     },
   });
@@ -33,6 +33,7 @@ export default async function ApplicationsPage() {
     ...app,
     applicationDate: app.applicationDate.toISOString(),
     followUpDate: app.followUpDate?.toISOString() ?? null,
+    followUpCompleted: app.followUpCompleted,
   }));
 
   return (

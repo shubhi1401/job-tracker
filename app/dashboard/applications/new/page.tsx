@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -20,6 +19,7 @@ export default function NewApplicationPage() {
     new Date().toISOString().split("T")[0]
   );
 
+  const [interviewDate, setInterviewDate] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -58,6 +58,9 @@ export default function NewApplicationPage() {
           recruiterName: recruiterName || null,
           recruiterEmail: recruiterEmail || null,
           applicationDate: new Date(`${applicationDate}T12:00:00`).toISOString(),
+          interviewDate: interviewDate
+            ? new Date(`${interviewDate}T12:00:00`).toISOString()
+            : null,
           followUpDate: followUpDate
             ? new Date(`${followUpDate}T12:00:00`).toISOString()
             : null,
@@ -209,6 +212,19 @@ export default function NewApplicationPage() {
             onChange={(e) => setApplicationDate(e.target.value)}
             className={inputClass}
           />
+        </div>
+
+        <div>
+          <label className={labelClass}>Interview Date</label>
+          <input
+            type="date"
+            value={interviewDate}
+            onChange={(e) => setInterviewDate(e.target.value)}
+            className={inputClass}
+          />
+          <p className="mt-1 text-xs text-slate-400">
+            Optional — schedule an upcoming interview round.
+          </p>
         </div>
 
         <div>

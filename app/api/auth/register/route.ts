@@ -6,7 +6,9 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { name, email, password } = body;
+    const name = body.name?.trim();
+    const email = body.email?.trim().toLowerCase();
+    const password = body.password;
 
     if (!name || !email || !password) {
       return NextResponse.json(

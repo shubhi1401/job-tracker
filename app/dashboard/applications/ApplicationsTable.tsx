@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
@@ -12,6 +11,7 @@ type Application = {
   status: "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
   applicationDate: string;
   followUpDate: string | null;
+  followUpCompleted?: boolean;
   location: string;
 };
 
@@ -35,14 +35,16 @@ export default function ApplicationsTable({
         app.role.toLowerCase().includes(search.toLowerCase());
 
       const isOverdue =
+        !app.followUpCompleted &&
         app.followUpDate !== null &&
         new Date(app.followUpDate).setHours(0, 0, 0, 0) < today.getTime();
 
       const matchesFilter =
-        filter === "ALL" ||
-        filter === "OVERDUE"
-          ? filter === "ALL" || (isOverdue && app.status !== "OFFER" && app.status !== "REJECTED")
-          : app.status === filter;
+        filter === "ALL"
+          ? true
+          : filter === "OVERDUE"
+            ? isOverdue && app.status !== "OFFER" && app.status !== "REJECTED"
+            : app.status === filter;
 
       return matchesSearch && matchesFilter;
     });
@@ -96,9 +98,18 @@ export default function ApplicationsTable({
                   {new Date(app.applicationDate).toLocaleDateString()}
                 </td>
                 <td className="p-4 text-slate-300">
-                  {app.followUpDate
-                    ? new Date(app.followUpDate).toLocaleDateString()
-                    : "Not scheduled"}
+                  {app.followUpDate ? (
+                    <div className="flex items-center gap-2">
+                      <span>{new Date(app.followUpDate).toLocaleDateString()}</span>
+                      {app.followUpCompleted && (
+                        <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-300">
+                          Done
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    "Not scheduled"
+                  )}
                 </td>
                 <td className="p-4 text-slate-300">{app.location}</td>
                 <td className="p-4">

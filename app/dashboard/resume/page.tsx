@@ -1,49 +1,28 @@
-
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-
-type Resume = {
-  id: number;
-  fileName: string;
-  createdAt: string;
-};
-
-function ResumeManager({ initialResumes }: { initialResumes: Resume[] }) {
-  return (
-    <main>
-      <h1>Resumes</h1>
-      {initialResumes.length === 0 ? (
-        <p>No resumes yet.</p>
-      ) : (
-        <ul>
-          {initialResumes.map((resume) => (
-            <li key={resume.id}>
-              {resume.fileName} — {new Date(resume.createdAt).toLocaleDateString()}
-            </li>
-          ))}
-        </ul>
-      )}
-    </main>
-  );
-}
+import prisma from "@/lib/prisma";
+import ResumeManagerClient from "./ResumeManagerClient";
 
 export const metadata: Metadata = {
-  title: "Resume | JobTracker AI",
+  title: "Resumes | JobTracker AI",
 };
 
 export default async function ResumePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const resumes = await (await import("@/lib/prisma")).default.resume.findMany({
+  const records = await prisma.resume.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
     select: { id: true, fileName: true, createdAt: true },
   });
 
-  return <ResumeManager initialResumes={resumes.map((r) => ({
-    ...r,
+  const initialResumes = records.map((r) => ({
+    id: r.id,
+    fileName: r.fileName,
     createdAt: r.createdAt.toISOString(),
-  }))} />;
+  }));
+
+  return <ResumeManagerClient initialResumes={initialResumes} />;
 }

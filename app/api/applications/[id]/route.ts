@@ -1,4 +1,3 @@
-
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { NextResponse } from "next/server";
@@ -6,6 +5,49 @@ import { NextResponse } from "next/server";
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
+
+export async function GET(
+  _request: Request,
+  { params }: RouteContext
+) {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const applicationId = Number(id);
+
+    if (!Number.isInteger(applicationId) || applicationId <= 0) {
+      return NextResponse.json(
+        { error: "Invalid application ID." },
+        { status: 400 }
+      );
+    }
+
+    const application = await prisma.application.findFirst({
+      where: { id: applicationId, userId: user.id },
+    });
+
+    if (!application) {
+      return NextResponse.json(
+        { error: "Application not found." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(application);
+  } catch (error) {
+    console.error("GET APPLICATION ERROR:", error);
+
+    return NextResponse.json(
+      { error: "Failed to fetch application." },
+      { status: 500 }
+    );
+  }
+}
 
 export async function PUT(
   request: Request,

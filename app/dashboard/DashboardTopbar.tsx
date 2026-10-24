@@ -1,13 +1,29 @@
 import { Bell, Search } from "lucide-react";
+import Link from "next/link";
 
-export function DashboardTopbar() {
+type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+export function DashboardTopbar({ user }: { user?: User | null }) {
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((p) => p[0].toUpperCase())
+        .join("")
+    : "JT";
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-midnight/80 px-5 py-4 backdrop-blur-xl sm:px-8">
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm text-slate-400">Welcome back</p>
           <h1 className="text-2xl font-black tracking-tight text-white">
-            Dashboard
+            {user?.name ? user.name.split(" ")[0] : "Dashboard"}
           </h1>
         </div>
 
@@ -21,22 +37,22 @@ export function DashboardTopbar() {
             />
           </div>
 
-          <button
-            type="button"
+          <Link
+            href="/dashboard/reminders"
             className="relative grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.05] text-slate-300 transition hover:border-blue-300/40 hover:text-white"
-            aria-label="Notifications"
+            aria-label="Reminders"
           >
             <Bell className="h-5 w-5" />
             <span className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full bg-blue-400" />
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-blue-400 to-cyan-300 text-sm font-black text-slate-950 shadow-glow"
-            aria-label="User avatar"
+          <Link
+            href="/dashboard/settings"
+            className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-blue-400 to-cyan-300 text-sm font-black text-slate-950 shadow-glow transition hover:scale-105"
+            aria-label="Account Settings"
           >
-            JD
-          </button>
+            {initials}
+          </Link>
         </div>
       </div>
     </header>
