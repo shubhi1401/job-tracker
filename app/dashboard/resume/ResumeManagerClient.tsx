@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Download,
   Eye,
+  FileCheck2,
   FileText,
   Loader2,
   Sparkles,
@@ -131,13 +132,23 @@ export default function ResumeManagerClient({
           </p>
         </div>
 
-        <Link
-          href="/dashboard/resume-match"
-          className="inline-flex w-fit items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 shadow-glow"
-        >
-          <Target className="h-4 w-4" />
-          Open Resume Match
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/dashboard/resume/audit"
+            className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-500/20 shadow-glow"
+          >
+            <FileCheck2 className="h-4 w-4" />
+            ATS Resume Audit
+          </Link>
+
+          <Link
+            href="/dashboard/resume-match"
+            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 shadow-glow"
+          >
+            <Target className="h-4 w-4" />
+            Open Resume Match
+          </Link>
+        </div>
       </div>
 
       {/* Notifications */}
@@ -278,6 +289,14 @@ export default function ResumeManagerClient({
                     <Download className="h-4 w-4" />
                     Download
                   </a>
+
+                  <Link
+                    href={`/dashboard/resume/audit?resumeId=${resume.id}`}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/20"
+                  >
+                    <FileCheck2 className="h-4 w-4" />
+                    ATS Audit
+                  </Link>
 
                   <Link
                     href="/dashboard/resume-match"

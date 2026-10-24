@@ -23,32 +23,39 @@ export default async function ApplicationsPage() {
       role: true,
       status: true,
       applicationDate: true,
+      interviewDate: true,
       followUpDate: true,
       followUpCompleted: true,
       location: true,
+      salary: true,
+      jobUrl: true,
+      recruiterName: true,
+      recruiterEmail: true,
+      notes: true,
     },
   });
 
   const applications = records.map((app) => ({
     ...app,
     applicationDate: app.applicationDate.toISOString(),
+    interviewDate: app.interviewDate?.toISOString() ?? null,
     followUpDate: app.followUpDate?.toISOString() ?? null,
     followUpCompleted: app.followUpCompleted,
   }));
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Applications</h1>
-          <p className="text-slate-400">
-            Manage and filter all your job applications.
+          <h1 className="text-3xl font-black text-white">Applications</h1>
+          <p className="mt-1 text-slate-400">
+            Track, filter, and manage your pipeline across table and kanban views.
           </p>
         </div>
 
         <Link
           href="/dashboard/applications/new"
-          className="shrink-0 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
+          className="shrink-0 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-glow transition hover:bg-blue-500"
         >
           + Add Application
         </Link>

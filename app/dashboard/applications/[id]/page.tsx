@@ -1,8 +1,32 @@
-
+import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
+import ApplicationDetailClient from "./ApplicationDetailClient";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const applicationId = Number(id);
+  if (!Number.isInteger(applicationId) || applicationId <= 0) {
+    return { title: "Application | JobTracker AI" };
+  }
+
+  const app = await prisma.application.findUnique({
+    where: { id: applicationId },
+    select: { company: true, role: true },
+  });
+
+  if (!app) return { title: "Application Not Found | JobTracker AI" };
+
+  return {
+    title: `${app.role} at ${app.company} | JobTracker AI`,
+    description: `Manage interview status, notes, and preparation for ${app.role} at ${app.company}.`,
+  };
+}
 
 export default async function ApplicationDetailsPage({
   params,
@@ -26,76 +50,23 @@ export default async function ApplicationDetailsPage({
 
   if (!application) notFound();
 
-  const fields = [
-    ["Company", application.company],
-    ["Role", application.role],
-    ["Status", application.status],
-    ["Location", application.location],
-    ["Salary", application.salary],
-    ["Recruiter Name", application.recruiterName],
-    ["Recruiter Email", application.recruiterEmail],
-    ["Application Date", application.applicationDate.toLocaleDateString()],
-    [
-      "Follow-up Date",
-      application.followUpDate?.toLocaleDateString() ?? "Not scheduled",
-    ],
-    [
-      "Interview Date",
-      application.interviewDate?.toLocaleDateString() ?? "Not scheduled",
-    ],
-    ["Job URL", application.jobUrl],
-    ["Notes", application.notes],
-    [
-      "Follow-up Completed",
-      application.followUpCompleted ? "Yes" : "No",
-    ],
-  ];
+  const formattedApplication = {
+    id: application.id,
+    company: application.company,
+    role: application.role,
+    location: application.location,
+    salary: application.salary,
+    jobUrl: application.jobUrl,
+    status: application.status,
+    recruiterName: application.recruiterName,
+    recruiterEmail: application.recruiterEmail,
+    applicationDate: application.applicationDate.toISOString(),
+    interviewDate: application.interviewDate ? application.interviewDate.toISOString() : null,
+    followUpDate: application.followUpDate ? application.followUpDate.toISOString() : null,
+    followUpCompleted: application.followUpCompleted,
+    notes: application.notes,
+    createdAt: application.createdAt.toISOString(),
+  };
 
-  return (
-    <div className="max-w-3xl space-y-6">
-      <div>
-        <Link
-          href="/dashboard/applications"
-          className="text-sm text-blue-300 hover:text-blue-200"
-        >
-          ← Back to Applications
-        </Link>
-        <h1 className="mt-4 text-3xl font-bold text-white">
-          Application Details
-        </h1>
-        <p className="mt-2 text-slate-400">
-          Review your saved application information.
-        </p>
-      </div>
-
-      <div className="grid gap-4 rounded-2xl border border-white/10 bg-white/[0.05] p-6 sm:grid-cols-2">
-        {fields.map(([label, value]) => (
-          <div key={label} className="min-w-0 space-y-1">
-            <p className="text-sm text-slate-400">{label}</p>
-            {label === "Job URL" && value ? (
-              <a
-                href={value}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="break-all text-blue-300 hover:underline"
-              >
-                Open job posting
-              </a>
-            ) : (
-              <p className="break-words font-medium text-white">
-                {value || "Not provided"}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <Link
-        href={`/dashboard/applications/${application.id}/edit`}
-        className="inline-block rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
-      >
-        Edit Application
-      </Link>
-    </div>
-  );
+  return <ApplicationDetailClient initialApplication={formattedApplication} />;
 }
