@@ -1,234 +1,216 @@
-# JobTracker AI — Intelligent Career Pipeline & Recruitment Platform
+# JobTracker AI
 
-<div align="center">
+A full-stack job search tracker and career pipeline workspace built with **Next.js 16 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS 4**, and **Prisma ORM** with **PostgreSQL**.
 
-![Next.js 16](https://img.shields.io/badge/Next.js_16-black?style=for-the-badge&logo=next.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript_5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![Prisma 7](https://img.shields.io/badge/Prisma_7-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Turbopack](https://img.shields.io/badge/Turbopack-000000?style=for-the-badge&logo=vercel&logoColor=white)
-
-**An enterprise-grade, privacy-first career management and recruitment intelligence suite.**  
-*Featuring in-memory PDF parsing, heuristic job description extraction, ATS resume auditing, a networking CRM, and total compensation negotiation modeling.*
-
-</div>
+I built this project to solve the fragmentation of modern tech job hunts—replacing messy spreadsheets, loose resume PDFs, and scattered notes with a single, fast workspace that handles application tracking, resume ATS audits, interview prep, and offer evaluation.
 
 ---
 
-## 🌟 Overview
+## Features
 
-**JobTracker AI** is a full-stack career platform designed to help modern software engineers, tech professionals, and job seekers manage their recruitment pipeline from initial discovery to offer negotiation. 
+### 1. Application Tracking & Kanban Board
+- **Table & Kanban Views:** Switch between a detailed applications table and an interactive 4-column drag-and-drop Kanban board (`Applied`, `Interview`, `Offer`, `Rejected`).
+- **Optimistic UI:** Stage updates and status transitions update immediately in the UI for seamless interaction, syncing with backend API routes in the background.
+- **Smart Follow-Up Reminders:** Automatically flags overdue recruiter follow-ups and upcoming interviews on the dashboard.
+- **CSV Export:** Export your entire application pipeline to CSV with UTF-8 BOM encoding for clean Excel and Google Sheets compatibility.
 
-Unlike traditional spreadsheets or simplistic CRUD trackers, JobTracker AI combines **relational workflow tracking**, **client-side privacy-first PDF intelligence**, and **targeted AI assistants** across all stages of the job hunt.
+### 2. Resume Vault & ATS Audit
+- **Secure File Storage:** Uploaded PDF resumes are validated using magic-byte inspection (`%PDF-`) and stored outside the public directory with randomized UUID filenames.
+- **In-Memory Text Extraction:** Uses `unpdf` to extract text in memory without relying on external SaaS APIs or leaking candidate data.
+- **ATS Audit Scoring:** Evaluates resume text against a deterministic rubric (scoring 20–98) based on section completeness, strong engineering action verbs, quantifiable metrics, word count, and passive phrase penalties.
+- **Resume-to-Job Matching:** Client-side keyword normalization and skill benchmarking across 45+ technical skills to identify missing keywords.
 
----
+### 3. Application Command Center
+- Detailed workspace for each application (`/dashboard/applications/[id]`) with interview timelines, recruiter contacts, and quick links to generate tailored prep materials.
+- Quick `mailto:` recruiter reach-out with pre-populated subject lines.
 
-## 🚀 Key Features
+### 4. Networking & Referral CRM
+- Track outreach to recruiters, alumni, and colleagues across stages (`Reached Out`, `Call Scheduled`, `Referred`, `Interviewing`, `Closed`).
+- Ready-to-use outreach templates formatted for LinkedIn connection notes (<300 characters), coffee chat requests, and recruiter pitches.
 
-### 1. 📋 Application Pipeline & Kanban Board
-- **Dual View Modes**: Seamless toggle between a dense data table and an interactive 4-column **Kanban Board** (`Applied`, `Interview`, `Offer`, `Rejected`).
-- **One-Click Stage Transitions**: Move applications across stages with optimistic UI updates.
-- **Overdue Follow-up Filters**: Automatic date calculation highlighting contacts that require follow-up.
-- **Export to CSV**: One-click data export with UTF-8 BOM encoding and formula-injection sanitization for Excel & Google Sheets.
+### 5. Offer Comparison & Compensation Calculator
+- Calculates **1st-Year Total Compensation** vs. **Recurring Annual Compensation** by breaking down base salary, annual bonus, stock/RSU vesting, and sign-on bonus.
+- Compares competing offers side-by-side with negotiation talking points and counteroffer email templates.
 
-### 2. ⚡ AI Smart Job Description Parser & Auto-fill
-- **Frictionless Ingestion**: Paste raw job descriptions from LinkedIn, Indeed, Greenhouse, or Lever.
-- **Heuristic Extraction Engine**:
-  - Automatically parses **Company**, **Role / Title**, **Location & Work Model** (Remote, Hybrid, Onsite), and **Salary Ranges**.
-  - Extracts recruiter contact information (Name & Email).
-  - Identifies and chips **key tech stack skills & frameworks**.
-  - Formats key responsibilities into bulleted notes with 1-click form population.
-
-### 3. 📄 Private Resume Management & AI ATS Audit
-- **Zero-Cloud Privacy**: Uploaded PDF resumes are stored in isolated local storage (`private-resumes/`) and parsed in-memory using `unpdf` without third-party cloud leaks.
-- **ATS Clarity & Parseability Audit**:
-  - Visual 0–100% parseability score dial.
-  - Action-oriented **Power Verb Analyzer** (identifying leadership and technical impact verbs).
-  - **Passive Voice Detector** flagging weak phrasing.
-  - Structural audit checking for Essential Sections, Quantifiable Metrics, and formatting standards.
-- **Job Matching Engine**: Benchmarks resume keyword density against job descriptions with similarity scoring.
-
-### 4. 🎯 Unified Application Command Center (`/dashboard/applications/[id]`)
-- **Status Progression Stepper**: One-click stage advancement directly from the application workspace.
-- **Integrated Tool Launchpad**: 1-click navigation to generate tailored interview prep, cover letters, referral outreach, or offer evaluations for that specific company.
-- **Direct Recruiter Actions**: One-click `mailto:` email composer with pre-filled subject and clipboard copy.
-- **Activity & Interview Notes Timeline**: Append timestamped interview feedback, take-home progress, and recruiter notes.
-
-### 5. 🤝 Referrals & Networking CRM (`/dashboard/referrals`)
-- **Professional Outreach Pipeline**: Track employee referrals, alumni coffee chats, and recruiter contacts (`Reached Out`, `Call Scheduled`, `Referred`, `Interviewing`, `No Response`).
-- **AI Cold Outreach Generator**:
-  - **LinkedIn Connection Notes**: Formatted to stay under LinkedIn's strict **300-character limit** with a live character counter.
-  - **Alumni Coffee Chat Pitch**: Low-friction 15-minute informational interview request.
-  - **Recruiter Direct Pitch**: High-impact value pitch inquiring about engineering headcount.
-  - **Polite Follow-up**: Gentle 4-to-6 day bump template.
-  - **Copy & Open LinkedIn**: Simultaneous clipboard copy and profile launch.
-
-### 6. 💰 Offer Evaluator & Total Compensation Calculator (`/dashboard/offers`)
-- **Total Compensation (TC) Modeling**:
-  - Calculates **1st-Year Total Compensation** vs. **Recurring Annual Total Comp**.
-  - Granular breakdown of Base Salary, Annual Bonus %, Annual Stock/RSU Vesting, Sign-on Bonus, and 401(k) Match.
-- **Side-by-Side Offer Comparison**: Compare competing packages, work models, and decision deadlines.
-- **AI Counteroffer & Negotiation Engine**:
-  - Generates recommended counter targets (Base vs. Sign-on vs. Equity).
-  - Analyzes competing offers for tactical leverage.
-  - Generates polished, high-leverage counteroffer email drafts and live recruiter phone call scripts with objection handlers.
-
-### 7. 🤖 AI Cover Letter & Interview Preparation Tools
-- **AI Cover Letter Generator**: Generates customized pitch letters referencing verified skills extracted from your uploaded resume. Tone presets include *Confident*, *Collaborative*, and *Direct*.
-- **Role-Specific Interview Prep**: Generates 5 STAR behavioral questions with interview tips, 5 technical architecture questions with core concepts, and 4 smart closing questions for the hiring team.
-
-### 8. 📅 Interactive Event Calendar
-- Real-time calendar algorithm computing monthly grids with color-coded event dots (cyan for upcoming interview rounds, amber for follow-ups).
-- Selected-day agenda panel with direct navigation to scheduled applications.
+### 6. Cover Letter & Interview Prep
+- Generate tailored cover letter drafts matching tone presets (*Confident*, *Collaborative*, *Direct*).
+- Generate role-specific STAR behavioral questions, technical architecture questions, and smart reverse-interview questions.
 
 ---
 
-## 🛠️ Technical Architecture & Engineering Decisions
+## Tech Stack
 
+- **Framework:** Next.js 16.2 (App Router, Turbopack)
+- **Frontend:** React 19, Tailwind CSS 4, Lucide React, Recharts
+- **Backend:** Next.js Route Handlers (`app/api/*`)
+- **Database:** PostgreSQL with Prisma 7 ORM (`@prisma/adapter-pg`)
+- **Authentication:** Custom session-based authentication with `bcrypt` password hashing and SHA-256 session token cookies
+- **PDF Processing:** `unpdf` for fast, zero-dependency in-memory PDF parsing
+- **Language:** TypeScript 5
+
+---
+
+## Architecture & Engineering Decisions
+
+1. **Why Next.js App Router Monorepo?**  
+   Co-locating Server Components, Client Components, and API Route Handlers in a single TypeScript codebase allows end-to-end type sharing with Prisma while eliminating client-side data-fetching waterfalls on initial dashboard loads.
+
+2. **Database Sessions vs. Stateless JWTs:**  
+   Session tokens are cryptographically generated (32 random bytes), stored as SHA-256 hashes in the database with a 7-day expiration, and set as `httpOnly`, `SameSite=Lax` cookies. This ensures immediate revocation upon logout without requiring distributed token blocklists.
+
+3. **Deterministic Heuristic Engine vs. Third-Party LLM APIs:**  
+   Job parsing, cover letters, outreach pitches, and ATS audits run on deterministic rule-based algorithms, regex parsers, and structured templates. This achieves sub-10ms response times, zero external API costs, and predictable, testable output—while maintaining clean API boundaries for plugging in an LLM SDK later.
+
+4. **Private Storage & Safe File Streaming:**  
+   Resumes are saved outside the web root (`private-resumes/`) to prevent direct URL access. Downloads are streamed through an authenticated endpoint with `Cache-Control: private, no-store` and `X-Content-Type-Options: nosniff`.
+
+---
+
+## Database Schema
+
+```prisma
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  sessions     Session[]
+  applications Application[]
+  resumes      Resume[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Application {
+  id                Int               @id @default(autoincrement())
+  company           String
+  role              String
+  jobUrl            String?
+  location          String
+  salary            String?
+  status            ApplicationStatus // APPLIED | INTERVIEW | OFFER | REJECTED
+  recruiterName     String?
+  recruiterEmail    String?
+  applicationDate   DateTime
+  interviewDate     DateTime?
+  followUpDate      DateTime?
+  followUpCompleted Boolean           @default(false)
+  notes             String?
+  userId            Int
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Resume {
+  id        Int      @id @default(autoincrement())
+  fileName  String
+  filePath  String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Next.js 16 App Router                    │
-│      React 19 Server Components + Client Workspaces         │
-└──────────────┬───────────────────────────────┬──────────────┘
-               │                               │
-        Server Actions / API            Static Optimization
-               │                               │
-┌──────────────▼──────────────┐ ┌──────────────▼──────────────┐
-│       Core Relational       │ │      In-Memory Parser       │
-│         Prisma 7 ORM        │ │           unpdf             │
-│   PostgreSQL (Connection    │ │  (Private disk isolation &  │
-│          Pooling)           │ │  zero cloud resume leakage) │
-└──────────────┬──────────────┘ └─────────────────────────────┘
-               │
-┌──────────────▼──────────────┐
-│   Atomic User-Scoped Data   │
-│   (Referrals CRM & Offers)  │
-└─────────────────────────────┘
-```
-
-### Key Engineering Highlights:
-- **Zero Third-Party PDF Leakage**: Resume text extraction is executed completely in-memory on Node.js using `unpdf` rather than external SaaS parsing APIs, ensuring candidate PII remains secure.
-- **Prisma Connection Pooling**: Configured with a `globalThis` singleton client utilizing `@prisma/adapter-pg` to avoid pool exhaustion in serverless or local environments.
-- **Optimistic UI & Hydration Safety**: Real-time Kanban transitions, inline date schedulers, and follow-up toggles respond instantaneously on the client while synchronizing with REST endpoints.
-- **Heuristic NLP Tokenizer**: Lightweight, deterministic regex and keyword density parsers for job postings and resume audits that execute in milliseconds without external API latency.
 
 ---
 
-## 💻 Tech Stack
-
-| Layer | Technologies |
-| :--- | :--- |
-| **Framework** | [Next.js 16](https://nextjs.org/) (App Router, Turbopack, Server Components) |
-| **Language** | [TypeScript 5](https://www.typescriptlang.org/) (Strict mode, full type-safety) |
-| **Styling** | [Tailwind CSS 4](https://tailwindcss.com/) with custom glow effects & dark theme |
-| **Database & ORM** | [PostgreSQL](https://www.postgresql.org/) & [Prisma 7](https://www.prisma.io/) with `@prisma/adapter-pg` |
-| **Authentication** | Custom session tokens with `bcrypt` password hashing |
-| **PDF & File Parsing**| [`unpdf`](https://github.com/unjs/unpdf) (fast in-memory PDF extraction) |
-| **Icons & Charts** | [`lucide-react`](https://lucide.dev/), [`recharts`](https://recharts.org/) |
-
----
-
-## 📁 Project Directory Structure
+## Project Structure
 
 ```text
 job-tracker/
 ├── app/
-│   ├── api/                      # REST API routes
-│   │   ├── applications/         # Application CRUD & AI Job Parser
-│   │   ├── auth/                 # Login, Register, Logout
-│   │   ├── cover-letter/         # AI Cover Letter Generator
-│   │   ├── interview-prep/       # AI Interview Prep Engine
-│   │   ├── offers/               # Offers & AI Negotiation Engine
-│   │   ├── referrals/            # Referrals CRM & Cold Outreach Engine
-│   │   ├── reminders/            # Follow-up & Interview Reminders
-│   │   ├── resumes/              # PDF Upload, Text Extraction & ATS Audit
-│   │   └── user/settings/        # Account & Password Management
-│   ├── dashboard/                # Protected App Router pages
-│   │   ├── analytics/            # Conversion & Status Analytics
-│   │   ├── applications/         # Table, Kanban & Command Center ([id])
-│   │   ├── cover-letters/        # Cover Letter Workspace
-│   │   ├── interview-prep/       # STAR & Technical Prep Workspace
-│   │   ├── offers/               # Total Compensation & Offer Evaluator
-│   │   ├── referrals/            # Referrals CRM & Outreach Generator
-│   │   ├── reminders/            # Actionable reminders view
-│   │   ├── resume/               # Resume Management & ATS Audit
-│   │   ├── resume-match/         # Job Description Match Scoring
-│   │   └── settings/             # User Account Settings
-│   └── page.tsx                  # Landing / Home Page
-├── components/                   # Shared UI components
+│   ├── api/                      # Backend REST API routes
+│   │   ├── applications/         # Applications CRUD & parser
+│   │   ├── auth/                 # Login, register, logout
+│   │   ├── cover-letter/         # Cover letter generator
+│   │   ├── interview-prep/       # Interview question generator
+│   │   ├── offers/               # Offers & negotiation routes
+│   │   ├── referrals/            # Referrals CRM & outreach
+│   │   ├── reminders/            # Follow-up & interview reminders
+│   │   ├── resumes/              # PDF upload, stream & ATS audit
+│   │   └── user/settings/        # Profile & password updates
+│   ├── dashboard/                # Protected workspace routes
+│   │   ├── analytics/            # Funnel & status charts
+│   │   ├── applications/         # Kanban & table views
+│   │   ├── cover-letters/        # Cover letter generator tool
+│   │   ├── interview-prep/       # Interview prep tool
+│   │   ├── offers/               # Compensation comparison
+│   │   ├── referrals/            # Networking CRM
+│   │   ├── resume/               # Resume vault & ATS audit
+│   │   └── settings/             # Account settings
+│   └── page.tsx                  # Landing page
+├── components/                   # Shared UI, form, and auth components
 ├── lib/
-│   ├── auth.ts                   # Session extraction & verification
-│   ├── dashboard-data.ts         # Navigation & sidebar schemas
-│   ├── offers-storage.ts         # Offer calculations & atomic storage
-│   ├── prisma.ts                 # Prisma Client singleton
-│   └── referrals-storage.ts      # Referrals data layer
-├── prisma/
-│   └── schema.prisma             # PostgreSQL database schema
-├── private-resumes/              # Private local disk PDF storage (gitignored)
-└── data/                         # Local user workflow data (gitignored)
+│   ├── auth.ts                   # Session verification & getCurrentUser
+│   ├── local-db.ts               # Local offline database fallback
+│   ├── prisma.ts                 # Prisma singleton client
+│   └── storage-paths.ts          # Environment-aware file storage paths
+└── prisma/
+    └── schema.prisma             # Database schema
 ```
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### Prerequisites
-- **Node.js**: `v20.x` or higher
-- **Package Manager**: `npm` (or `pnpm` / `yarn`)
-- **PostgreSQL**: A local or cloud PostgreSQL instance (e.g., Neon, Supabase, or local Docker)
+- **Node.js** `v20.x` or higher
+- **npm** or **pnpm**
+- **PostgreSQL** (local instance or cloud database like Neon)
 
-### Installation
+### Setup Instructions
 
-1. **Clone the repository**:
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/your-username/job-tracker.git
    cd job-tracker
    ```
 
-2. **Install dependencies**:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Configure Environment Variables**:
+3. **Configure Environment Variables:**
    Create a `.env` file in the root directory:
    ```env
-   # PostgreSQL Connection String
-   DATABASE_URL="postgresql://username:password@localhost:5432/jobtracker?schema=public"
+   # PostgreSQL Connection URL
+   DATABASE_URL="postgresql://user:password@localhost:5432/jobtracker?sslmode=require"
 
-   # Session Authentication Secret
-   SESSION_SECRET="your-super-secret-random-key"
+   # Secret used for session security
+   SESSION_SECRET="your-random-32-byte-secret"
    ```
 
-4. **Initialize Database Schema**:
+4. **Push Database Schema:**
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
-5. **Start the Development Server**:
+5. **Run Development Server:**
    ```bash
    npm run dev
    ```
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-6. **Build for Production**:
-   ```bash
-   npm run build
-   npm run start
-   ```
+---
+
+## Roadmap
+
+- [ ] Add Next.js `middleware.ts` for centralized edge route protection
+- [ ] Migrate PDF binary storage from local disk to AWS S3 / Cloudflare R2
+- [ ] Implement OAuth 2.0 (Google and GitHub Sign-In)
+- [ ] Integrate Gemini / OpenAI API with streaming for cover letter and interview prep generation
+- [ ] Browser extension for 1-click job clipping from LinkedIn and Indeed
 
 ---
 
-## 🔒 Security & Privacy
+## License
 
-- **Git-Ignored Private Storage**: Uploaded PDF resumes (`private-resumes/`) and user data stores (`data/`) are strictly git-ignored to prevent accidental public disclosure of personal identifiable information (PII).
-- **Environment Protection**: `.env` and credential files are omitted from source control.
-- **CSV Sanitization**: Exported fields are escaped to mitigate CSV Formula Injection attacks.
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
+This project is open-source under the [MIT License](LICENSE).
