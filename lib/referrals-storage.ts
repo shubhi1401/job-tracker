@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { getDataSubdir } from "@/lib/storage-paths";
 
 export type ReferralStatus =
   | "REACHED_OUT"
@@ -44,7 +45,7 @@ export type CreateReferralInput = {
 
 export type UpdateReferralInput = Partial<CreateReferralInput>;
 
-const DATA_DIR = path.join(process.cwd(), "data", "referrals");
+const DATA_DIR = getDataSubdir("referrals");
 
 async function ensureDirectory(): Promise<void> {
   await mkdir(DATA_DIR, { recursive: true });

@@ -5,6 +5,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { getResumesDir } from "@/lib/storage-paths";
 
 export const runtime = "nodejs";
 
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid PDF file." }, { status: 400 });
     }
 
-    const directory = path.join(process.cwd(), "private-resumes");
+    const directory = getResumesDir();
     await mkdir(directory, { recursive: true });
 
     const storedName = `${randomUUID()}.pdf`;

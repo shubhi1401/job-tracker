@@ -1,10 +1,10 @@
-
 import { NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { extractText, getDocumentProxy } from "unpdf";
+import { getResumesDir } from "@/lib/storage-paths";
 
 export const runtime = "nodejs";
 
@@ -51,8 +51,7 @@ export async function GET(
     }
 
     const filePath = path.join(
-      process.cwd(),
-      "private-resumes",
+      getResumesDir(),
       path.basename(resume.filePath)
     );
 
@@ -102,4 +101,3 @@ export async function GET(
     );
   }
 }
-

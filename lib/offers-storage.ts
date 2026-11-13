@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { getDataSubdir } from "@/lib/storage-paths";
 
 export type WorkModel = "REMOTE" | "HYBRID" | "ONSITE";
 export type OfferStatus = "EXPLORING" | "ACCEPTED" | "DECLINED" | "NEGOTIATING";
@@ -47,7 +48,7 @@ export type CreateOfferInput = {
 
 export type UpdateOfferInput = Partial<CreateOfferInput>;
 
-const DATA_DIR = path.join(process.cwd(), "data", "offers");
+const DATA_DIR = getDataSubdir("offers");
 
 async function ensureDirectory(): Promise<void> {
   await mkdir(DATA_DIR, { recursive: true });
